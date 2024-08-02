@@ -8,19 +8,19 @@ const libxmljs = require('libxmljs2');
 const app = express(); // Crear una aplicación Express
 const PORT = process.env.PORT || 3000; // Definir el puerto en el que el servidor escuchará
 
-// Crear la carpeta 'upload' si no existe
-if (!fs.existsSync('upload')) {
-    fs.mkdirSync('upload'); // Crear la carpeta 'upload' si no existe
-}
+// // Crear la carpeta 'upload' si no existe
+// if (!fs.existsSync('upload')) {
+//     fs.mkdirSync('upload'); // Crear la carpeta 'upload' si no existe
+// }
 
-// Crear la carpeta 'data' y el archivo 'files.json' si no existen
-if (!fs.existsSync('data')) {
-    fs.mkdirSync('data'); // Crear la carpeta 'data' si no existe
-}
-const filePath = path.join(__dirname, 'data', 'files.json');
-if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify({ xmlFiles: ["Select template"] }, null, 2)); // Crear el archivo 'files.json' con un valor inicial si no existe
-}
+// // Crear la carpeta 'data' y el archivo 'files.json' si no existen
+// if (!fs.existsSync('data')) {
+//     fs.mkdirSync('data'); // Crear la carpeta 'data' si no existe
+// }
+// const filePath = path.join(__dirname, 'data', 'files.json');
+// if (!fs.existsSync(filePath)) {
+//     fs.writeFileSync(filePath, JSON.stringify({ xmlFiles: ["Select template"] }, null, 2)); // Crear el archivo 'files.json' con un valor inicial si no existe
+// }
 
 // Configurar multer para almacenar archivos en la carpeta "upload"
 const storage = multer.diskStorage({
