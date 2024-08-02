@@ -6,7 +6,21 @@ const path = require('path'); // Importar el módulo Path para trabajar con ruta
 const libxmljs = require('libxmljs2');
 
 const app = express(); // Crear una aplicación Express
-const PORT = 3000; // Definir el puerto en el que el servidor escuchará
+const PORT = process.env.PORT || 3000; // Definir el puerto en el que el servidor escuchará
+
+// Crear la carpeta 'upload' si no existe
+if (!fs.existsSync('upload')) {
+    fs.mkdirSync('upload'); // Crear la carpeta 'upload' si no existe
+}
+
+// Crear la carpeta 'data' y el archivo 'files.json' si no existen
+if (!fs.existsSync('data')) {
+    fs.mkdirSync('data'); // Crear la carpeta 'data' si no existe
+}
+const filePath = path.join(__dirname, 'data', 'files.json');
+if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify({ xmlFiles: ["Select template"] }, null, 2)); // Crear el archivo 'files.json' con un valor inicial si no existe
+}
 
 // Configurar multer para almacenar archivos en la carpeta "upload"
 const storage = multer.diskStorage({
@@ -21,13 +35,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }); // Crear una instancia de multer con la configuración de almacenamiento
 
 app.use(cors()); // Habilitar CORS para permitir solicitudes desde otros dominios
-// Middleware para servir archivos estáticos
 app.use(express.json()); // Middleware para parsear JSON
 app.use(express.static(path.join(__dirname, 'public'))); // Servir archivos estáticos desde la carpeta "public"
-
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
 
 // Ruta para la carga de archivos
 app.post('/upload', upload.single('file'), (req, res) => {
@@ -75,7 +84,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
             res.status(200).send('Archivo subido y registrado exitosamente.'); // Enviar una respuesta de éxito si el archivo se ha subido y registrado correctamente
         });
     });
-
 });
 
 // Ruta para obtener la lista de archivos XML
@@ -152,14 +160,9 @@ app.delete('/delete', (req, res) => {
 app.post('/validate', (req, res) => {
     const { xml, xsd } = req.body;
 
-    // console.log('XML:', xml);
-    // console.log('XSD:', xsd);
-
-    // Primero, verifica si el XSD es válido
     let xsdDoc;
     try {
         xsdDoc = libxmljs.parseXml(xsd);
-        // console.log(xsdDoc);
     } catch (err) {
         // XSD inválido
         console.error('Error al parsear el XSD:', err);
@@ -167,7 +170,6 @@ app.post('/validate', (req, res) => {
     }
 
     try {
-
         // Parse XML
         const xmlDoc = libxmljs.parseXml(xml);
         // Validar XML contra XSD
@@ -190,12 +192,9 @@ app.post('/validate', (req, res) => {
             });
         }
     } catch (error) {
-        // console.error('Error al validar XML contra XSD:', error);
         // Manejar errores relacionados con el esquema XSD
         if (error.message.includes('Invalid XSD schema')) {
-            // Inicializar el array
             let validationErrors = [];
-            // Agregar objetos al array
             validationErrors.push({ message: error.message });
             res.status(400).json({
                 isValid: false,
@@ -204,7 +203,6 @@ app.post('/validate', (req, res) => {
             });
         } else {
             // Manejar otros errores internos
-            // console.error('Error al validar XML contra XSD:', error);
             res.status(500).json({
                 error: 'Error interno al validar XML contra XSD.',
                 details: {
@@ -215,21 +213,6 @@ app.post('/validate', (req, res) => {
         }
     }
 });
-
-
-// Crear la carpeta 'upload' si no existe
-if (!fs.existsSync('upload')) {
-    fs.mkdirSync('upload'); // Crear la carpeta 'upload' si no existe
-}
-
-// Crear la carpeta 'data' y el archivo 'files.json' si no existen
-if (!fs.existsSync('data')) {
-    fs.mkdirSync('data'); // Crear la carpeta 'data' si no existe
-}
-const filePath = path.join(__dirname, 'data', 'files.json');
-if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, JSON.stringify({ xmlFiles: ["Select template"] }, null, 2)); // Crear el archivo 'files.json' con un valor inicial si no existe
-}
 
 // Iniciar el servidor
 app.listen(PORT, () => {
