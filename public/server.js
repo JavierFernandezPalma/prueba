@@ -22,17 +22,17 @@ const PORT = process.env.PORT || 3000; // Definir el puerto en el que el servido
 //     fs.writeFileSync(filePath, JSON.stringify({ xmlFiles: ["Select template"] }, null, 2)); // Crear el archivo 'files.json' con un valor inicial si no existe
 // }
 
-// Configurar multer para almacenar archivos en la carpeta "upload"
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) { // Función para definir la carpeta de destino
-        cb(null, 'upload/'); // Guardar archivos en la carpeta "upload"
-    },
-    filename: function (req, file, cb) { // Función para definir el nombre del archivo
-        cb(null, file.originalname); // Usar el nombre original del archivo
-    }
-});
+// // Configurar multer para almacenar archivos en la carpeta "upload"
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) { // Función para definir la carpeta de destino
+//         cb(null, 'upload/'); // Guardar archivos en la carpeta "upload"
+//     },
+//     filename: function (req, file, cb) { // Función para definir el nombre del archivo
+//         cb(null, file.originalname); // Usar el nombre original del archivo
+//     }
+// });
 
-const upload = multer({ storage: storage }); // Crear una instancia de multer con la configuración de almacenamiento
+// const upload = multer({ storage: storage }); // Crear una instancia de multer con la configuración de almacenamiento
 
 app.use(cors()); // Habilitar CORS para permitir solicitudes desde otros dominios
 app.use(express.json()); // Middleware para parsear JSON
