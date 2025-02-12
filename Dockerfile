@@ -1,5 +1,11 @@
-# You can change this to a newer version of MySQL available at
-# https://hub.docker.com/r/mysql/mysql-server/tags/
-FROM mysql/mysql-server:8.0.24
+# Usamos la imagen oficial de MySQL
+FROM mysql:8.0
 
-COPY config/user.cnf /etc/mysql/my.cnf
+# Establecemos las variables de entorno necesarias para MySQL
+ENV MYSQL_ROOT_PASSWORD=rootpassword
+ENV MYSQL_DATABASE=my_database
+ENV MYSQL_USER=user
+ENV MYSQL_PASSWORD=userpassword
+
+# Exponemos el puerto 3306 para la conexión a MySQL
+EXPOSE 3306
